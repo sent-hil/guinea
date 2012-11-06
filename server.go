@@ -29,28 +29,22 @@ func main() {
 			fmt.Println("ERR")
 		}
 
+		// send register message to channel
 		go func() { hub.register <- &conn }()
 
 		go handleClient(conn)
 
+		// look for register message
 		select {
 		case c := <-hub.register:
 			fmt.Println(c)
 		}
-
-		// inside handleClient, once connect,
-		// print remoteAddr
-
-		// here read handleclient channel
 	}
 }
 
 func handleClient(conn net.Conn) {
 	// close connection on exit
 	defer conn.Close()
-
-	// print client info
-	//fmt.Println(conn.RemoteAddr())
 
 	// move away / no use?
 	// create a channel for message
