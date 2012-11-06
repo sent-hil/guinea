@@ -5,7 +5,20 @@ import (
 	"net"
 )
 
+type Hub struct {
+	connections map[net.Conn]bool
+	broadcast chan string
+	register chan net.Conn
+	unregister chan net.Conn
+}
+
 func main() {
+	var hub = Hub {
+		broadcast: make(chan string),
+		register: make(chan net.Conn),
+		unregister: make(chan net.Conn),
+	}
+
 	ln, _ := net.Listen("tcp", ":3000")
 
 	// server loop
@@ -15,7 +28,21 @@ func main() {
 			// why continue?
 			fmt.Println("ERR")
 		}
+
+		go func() { hub.register <- conn }()
+
+		//conns := make(map[string]bool)
+		//conns[conn.RemoteAddr().String()] = true
+		//fmt.Println(conns)
+
 		go handleClient(conn)
+
+		select {
+		case c := <- hub.register:
+			fmt.Println(c)
+		default:
+			continue
+		}
 
 		// inside handleClient, once connect,
 		// print remoteAddr
@@ -29,7 +56,7 @@ func handleClient(conn net.Conn) {
 	defer conn.Close()
 
 	// print client info
-	fmt.Println(conn.RemoteAddr())
+	//fmt.Println(conn.RemoteAddr())
 
 	// move away / no use?
 	// create a channel for message
