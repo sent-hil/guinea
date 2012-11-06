@@ -8,17 +8,19 @@ import (
 func main() {
 	ln, _ := net.Listen("tcp", ":3000")
 
+  message := make(chan string)
+
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
 			// why continue?
 			fmt.Println("ERR")
 		}
-		go handleClient(conn)
+		go handleClient(conn, message)
 	}
 }
 
-func handleClient(conn net.Conn) {
+func handleClient(conn net.Conn, message chan string) {
 	// close connection on exit
 	defer conn.Close()
 	
@@ -29,12 +31,17 @@ func handleClient(conn net.Conn) {
 		if err != nil {
 			return
 		}
-		
-		// write buffer
-		fmt.Println(buf)
-		_, err2 := conn.Write(buf[0:n])
-		if err2 != nil {
-			return
-		}
+
+		//result, err2 := conn.Write(buf[0:n])
+
+    // send buffer to channel
+    message <- string(buf[0:n])
+
+    select {
+    case msg := <-message:
+      fmt.Println(msg)
+    default:
+      fmt.Println("default")
+    }
 	}
 }
