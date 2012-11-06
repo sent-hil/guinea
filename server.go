@@ -7,15 +7,15 @@ import (
 
 type Hub struct {
 	connections map[*net.Conn]bool
-	broadcast chan string
-	register chan *net.Conn
-	unregister chan *net.Conn
+	broadcast   chan string
+	register    chan *net.Conn
+	unregister  chan *net.Conn
 }
 
 func main() {
-	var hub = Hub {
-		broadcast: make(chan string),
-		register: make(chan *net.Conn),
+	var hub = Hub{
+		broadcast:  make(chan string),
+		register:   make(chan *net.Conn),
 		unregister: make(chan *net.Conn),
 	}
 
