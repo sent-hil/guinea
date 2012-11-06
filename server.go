@@ -6,17 +6,17 @@ import (
 )
 
 type Hub struct {
-	connections map[net.Conn]bool
+	connections map[*net.Conn]bool
 	broadcast chan string
-	register chan net.Conn
-	unregister chan net.Conn
+	register chan *net.Conn
+	unregister chan *net.Conn
 }
 
 func main() {
 	var hub = Hub {
 		broadcast: make(chan string),
-		register: make(chan net.Conn),
-		unregister: make(chan net.Conn),
+		register: make(chan *net.Conn),
+		unregister: make(chan *net.Conn),
 	}
 
 	ln, _ := net.Listen("tcp", ":3000")
@@ -29,19 +29,13 @@ func main() {
 			fmt.Println("ERR")
 		}
 
-		go func() { hub.register <- conn }()
-
-		//conns := make(map[string]bool)
-		//conns[conn.RemoteAddr().String()] = true
-		//fmt.Println(conns)
+		go func() { hub.register <- &conn }()
 
 		go handleClient(conn)
 
 		select {
-		case c := <- hub.register:
+		case c := <-hub.register:
 			fmt.Println(c)
-		default:
-			continue
 		}
 
 		// inside handleClient, once connect,
