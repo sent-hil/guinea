@@ -1,14 +1,12 @@
 package main
 
 import (
-	"net"
 	"fmt"
+	"net"
 )
 
 func main() {
 	ln, _ := net.Listen("tcp", ":3000")
-
-  message := make(chan string)
 
 	for {
 		conn, err := ln.Accept()
@@ -16,13 +14,16 @@ func main() {
 			// why continue?
 			fmt.Println("ERR")
 		}
-		go handleClient(conn, message)
+		go handleClient(conn)
 	}
 }
 
-func handleClient(conn net.Conn, message chan string) {
+func handleClient(conn net.Conn) {
 	// close connection on exit
 	defer conn.Close()
+	
+	// create a channel for message
+	message := make(chan string)
 	
 	var buf [8]byte
 	for {
@@ -32,16 +33,10 @@ func handleClient(conn net.Conn, message chan string) {
 			return
 		}
 
-		//result, err2 := conn.Write(buf[0:n])
+		// send buffer to channel
+		go func() {message <- string(buf[0:n])}()
 
-    // send buffer to channel
-    message <- string(buf[0:n])
-
-    select {
-    case msg := <-message:
-      fmt.Println(msg)
-    default:
-      fmt.Println("default")
-    }
+		msg := <-message
+		fmt.Println(msg)
 	}
 }
