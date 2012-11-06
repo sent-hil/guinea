@@ -5,13 +5,7 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
-func main() {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
-
+func handleInput() {
 	for {
 		e := termbox.PollEvent()
 		if e.Ch == 0 {
@@ -23,4 +17,14 @@ func main() {
 			fmt.Print(string(e.Ch))
 		}
 	}
+}
+
+func main() {
+	err := termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer termbox.Close()
+
+	handleInput()
 }
