@@ -9,13 +9,18 @@ type connection struct {
 }
 
 func (c *connection) reader() {
-	//for {
-		//var message string
-		//// receive message
-		//message = "foo"
-		//h.broadcast <- message
-	//}
-	//fmt.Println(c.nc)
+	for {
+		// read message
+		buf := make([]byte, 8)
+
+		_, err := (*c.nc).Read(buf)
+
+		if err != nil {
+			break
+		}
+
+		h.broadcast <- string(buf)
+	}
 }
 
 func (c *connection) writer() {
