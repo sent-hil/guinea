@@ -9,20 +9,21 @@ type hub struct {
 	unregister  chan *connection
 }
 
-var h = hub {
+var h = hub{
 	broadcast:  make(chan string),
 	register:   make(chan *connection),
 	unregister: make(chan *connection),
 }
 
 func (h *hub) run() {
+	// loops to look for incoming messages in channel
 	for {
 		select {
-		case c := <- h.register:
+		case c := <-h.register:
 			fmt.Println("registered: ", c)
-		case c := <- h.unregister:
+		case c := <-h.unregister:
 			fmt.Println("unregistered: ", c)
-		case c := <- h.broadcast:
+		case c := <-h.broadcast:
 			fmt.Println("broadcast: ", c)
 		}
 	}

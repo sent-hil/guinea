@@ -20,6 +20,7 @@ func (c *connection) reader() {
 			break
 		}
 
+		// ignore enter/newline
 		switch buf[0] {
 		case 10:
 		case 13:
@@ -31,8 +32,8 @@ func (c *connection) reader() {
 
 func (c *connection) writer() {
 	for message := range c.send {
-		fmt.Println(message)
 		// write message
+		fmt.Println(message)
 	}
 	c.nc.Close()
 }
@@ -46,6 +47,7 @@ func ncHandler(nc net.Conn) {
 
 	// unregisters connection once handler exists
 	defer func() { h.unregister <- c }()
+
 	go c.writer()
 	c.reader()
 }
