@@ -19,6 +19,6 @@ func main() {
 		}
 
 		// handle individual connection
-		ncHandler(conn)
+		go ncHandler(conn)
 	}
 }
