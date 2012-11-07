@@ -12,7 +12,7 @@ type connection struct {
 func (c *connection) reader() {
 	for {
 		// read message
-		buf := make([]byte, 8)
+		buf := make([]byte, 1)
 
 		_, err := c.nc.Read(buf)
 
@@ -20,7 +20,12 @@ func (c *connection) reader() {
 			break
 		}
 
-		h.broadcast <- string(buf)
+		switch buf[0] {
+		case 10:
+		case 13:
+		default:
+			h.broadcast <- string(buf)
+		}
 	}
 }
 
