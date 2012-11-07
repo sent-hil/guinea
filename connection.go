@@ -27,7 +27,7 @@ func (c *connection) reader() {
 		case 10:
 		case 13:
 		default:
-			h.broadcast <- string(buf)
+			h.broadcast <- buf
 		}
 	}
 }
