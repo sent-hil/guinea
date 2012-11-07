@@ -44,6 +44,7 @@ func ncHandler(nc net.Conn) {
 
 	// registers connection
 	h.register <- c
+	h.connections[c] = true
 
 	// unregisters connection once handler exists
 	defer func() { h.unregister <- c }()
