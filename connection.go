@@ -4,7 +4,8 @@ import "net"
 import "fmt"
 
 type connection struct {
-	nc   *net.Conn
+	// no need to use a pointer since net.Conn is already a pointer
+	nc   net.Conn
 	send chan string
 }
 
@@ -13,7 +14,7 @@ func (c *connection) reader() {
 		// read message
 		buf := make([]byte, 8)
 
-		_, err := (*c.nc).Read(buf)
+		_, err := c.nc.Read(buf)
 
 		if err != nil {
 			break
@@ -28,10 +29,10 @@ func (c *connection) writer() {
 		fmt.Println(message)
 		// write message
 	}
-	(*c.nc).Close()
+	c.nc.Close()
 }
 
-func ncHandler(nc *net.Conn) {
+func ncHandler(nc net.Conn) {
 	// inits and sets connection
 	c := &connection{send: make(chan string, 256), nc: nc}
 

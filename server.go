@@ -15,6 +15,6 @@ func main() {
 		if err != nil {
 			fmt.Println("ERR")
 		}
-		ncHandler(&conn)
+		ncHandler(conn)
 	}
 }
