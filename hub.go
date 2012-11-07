@@ -21,6 +21,7 @@ func (h *hub) run() {
 	for {
 		select {
 		case c := <-h.register:
+			h.connections[c] = true
 			fmt.Println("registered: ", c)
 		case c := <-h.unregister:
 			fmt.Println("unregistered: ", c)

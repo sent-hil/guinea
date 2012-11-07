@@ -1,7 +1,9 @@
 package main
 
-import "net"
-import "fmt"
+import (
+	"net"
+	"fmt"
+)
 
 type connection struct {
 	// no need to use a pointer since net.Conn is already a pointer
@@ -44,7 +46,6 @@ func ncHandler(nc net.Conn) {
 
 	// registers connection
 	h.register <- c
-	h.connections[c] = true
 
 	// unregisters connection once handler exists
 	defer func() { h.unregister <- c }()
