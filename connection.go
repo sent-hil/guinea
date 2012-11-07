@@ -28,7 +28,7 @@ func (c *connection) writer() {
 		fmt.Println(message)
 		// write message
 	}
-	//c.nc.Close()
+	(*c.nc).Close()
 }
 
 func ncHandler(nc *net.Conn) {
