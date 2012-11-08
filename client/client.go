@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	termbox "github.com/nsf/termbox-go"
 	"net"
@@ -11,14 +10,16 @@ import (
 func handleInput(nc net.Conn) {
 	// read from server async
 	go func() {
-		for {
-			status, err := bufio.NewReader(nc).ReadString('\n')
-			if err != nil {
-				panic(err)
-			}
+			for {
+				buf := make([]byte, 8)
+				_, err := nc.Read(buf)
 
-			fmt.Println(status)
-		}
+				if err != nil {
+					break
+				}
+
+				fmt.Print(string(buf))
+			}
 	}()
 
 	// write to server
