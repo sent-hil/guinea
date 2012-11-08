@@ -25,12 +25,13 @@ func (h *hub) run() {
 			fmt.Println("registered: ", c)
 		case c := <-h.unregister:
 			fmt.Println("unregistered: ", c)
-		case buf := <-h.broadcast:
-			for key, _ := range h.connections {
-				key.nc.Write(buf)
+		case msg := <-h.broadcast:
+			for conn, _ := range h.connections {
+				// dont send to self
+				conn.send <- msg
 			}
 
-			fmt.Println("broadcast: ", string(buf))
+			fmt.Println("broadcast: ", string(msg))
 		}
 	}
 }

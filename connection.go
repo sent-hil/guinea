@@ -2,13 +2,12 @@ package main
 
 import (
 	"net"
-	"fmt"
+	//"fmt"
 )
 
 type connection struct {
-	// no need to use a pointer since net.Conn is already a pointer
 	nc   net.Conn
-	send chan string
+	send chan []byte
 }
 
 func (c *connection) reader() {
@@ -29,14 +28,14 @@ func (c *connection) reader() {
 func (c *connection) writer() {
 	for message := range c.send {
 		// write message
-		fmt.Println(message)
+		c.nc.Write(message)
 	}
 	c.nc.Close()
 }
 
 func ncHandler(nc net.Conn) {
 	// inits and sets connection
-	c := &connection{send: make(chan string, 256), nc: nc}
+	c := &connection{send: make(chan []byte, 256), nc: nc}
 
 	// registers connection
 	h.register <- c
