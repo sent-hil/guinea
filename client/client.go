@@ -7,22 +7,23 @@ import (
 	"os"
 )
 
-func handleInput(nc net.Conn) {
-	// read from server async
-	go func() {
-			for {
-				buf := make([]byte, 8)
-				_, err := nc.Read(buf)
+// read from server async
+func reader(nc net.Conn) {
+	for {
+		buf := make([]byte, 8)
+		_, err := nc.Read(buf)
 
-				if err != nil {
-					break
-				}
+		if err != nil {
+			break
+		}
 
-				fmt.Print(string(buf))
-			}
-	}()
+		fmt.Print(string(buf))
+	}
 
-	// write to server
+}
+
+// write to server
+func writer(nc net.Conn) {
 	for {
 		e := termbox.PollEvent()
 		if e.Ch == 0 {
@@ -54,5 +55,6 @@ func main() {
 	}
 	defer termbox.Close()
 
-	handleInput(nc)
+	go writer(nc)
+	reader(nc)
 }
