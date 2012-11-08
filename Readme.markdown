@@ -1,1 +1,1 @@
-# Simple concurrent server in Go.
+# Simple chat server in Go.
