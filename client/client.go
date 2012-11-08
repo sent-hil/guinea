@@ -11,12 +11,14 @@ import (
 func handleInput(nc net.Conn) {
 	// read from server async
 	go func() {
-		status, err := bufio.NewReader(nc).ReadString('\n')
-		if err != nil {
-			panic(err)
-		}
+		for {
+			status, err := bufio.NewReader(nc).ReadString('\n')
+			if err != nil {
+				panic(err)
+			}
 
-		fmt.Println(status)
+			fmt.Println(status)
+		}
 	}()
 
 	// write to server
