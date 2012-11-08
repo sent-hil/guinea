@@ -1,13 +1,25 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	termbox "github.com/nsf/termbox-go"
 	"net"
 	"os"
-	termbox "github.com/nsf/termbox-go"
 )
 
 func handleInput(nc net.Conn) {
+	// read from server async
+	go func() {
+		status, err := bufio.NewReader(nc).ReadString('\n')
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(status)
+	}()
+
+	// write to server
 	for {
 		e := termbox.PollEvent()
 		if e.Ch == 0 {
@@ -32,7 +44,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	err2 := termbox.Init()
 	if err2 != nil {
 		panic(err2)
