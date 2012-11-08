@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net"
+	"os"
 	termbox "github.com/nsf/termbox-go"
 )
 
-func handleInput() {
+func handleInput(nc net.Conn) {
 	for {
 		e := termbox.PollEvent()
 		if e.Ch == 0 {
@@ -14,17 +16,28 @@ func handleInput() {
 				return
 			}
 		} else {
+			// send to server
+			nc.Write([]byte(string(e.Ch)))
 			fmt.Print(string(e.Ch))
 		}
 	}
 }
 
 func main() {
-	err := termbox.Init()
+	args := os.Args
+	addr := args[1]
+
+	// connects to tcp server
+	nc, err := net.Dial("tcp", addr)
 	if err != nil {
 		panic(err)
 	}
+	
+	err2 := termbox.Init()
+	if err2 != nil {
+		panic(err2)
+	}
 	defer termbox.Close()
 
-	handleInput()
+	handleInput(nc)
 }
