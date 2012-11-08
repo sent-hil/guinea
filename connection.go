@@ -10,6 +10,11 @@ type connection struct {
 	send chan []byte
 }
 
+type packet struct {
+	conn *connection
+	message []byte
+}
+
 func (c *connection) reader() {
 	for {
 		// read message
@@ -21,7 +26,12 @@ func (c *connection) reader() {
 			break
 		}
 
-		h.broadcast <- buf
+		pkt := packet {
+			conn: c,
+			message: buf,
+		}
+
+		h.broadcast <- pkt
 	}
 }
 

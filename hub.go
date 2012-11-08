@@ -4,14 +4,14 @@ import "fmt"
 
 type hub struct {
 	connections map[*connection]bool
-	broadcast   chan []byte
+	broadcast   chan packet
 	register    chan *connection
 	unregister  chan *connection
 }
 
 var h = hub{
 	connections: make(map[*connection]bool),
-	broadcast:  make(chan []byte),
+	broadcast:  make(chan packet),
 	register:   make(chan *connection),
 	unregister: make(chan *connection),
 }
@@ -25,13 +25,14 @@ func (h *hub) run() {
 			fmt.Println("registered: ", c)
 		case c := <-h.unregister:
 			fmt.Println("unregistered: ", c)
-		case msg := <-h.broadcast:
+		case pkt := <-h.broadcast:
 			for conn, _ := range h.connections {
-				// dont send to self
-				conn.send <- msg
+				if !(pkt.conn == conn) {
+					conn.send <- pkt.message
+				}
 			}
 
-			fmt.Println("broadcast: ", string(msg))
+			fmt.Println("broadcast: ", string(pkt.message))
 		}
 	}
 }
