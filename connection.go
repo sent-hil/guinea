@@ -1,19 +1,19 @@
 package main
 
 import (
-	"net"
 	"io"
+	"net"
 	//"fmt"
 )
 
 type connection struct {
 	// type of connection
-	ty io.ReadWriteCloser
+	ty   io.ReadWriteCloser
 	send chan []byte
 }
 
 type packet struct {
-	conn *connection
+	conn    *connection
 	message []byte
 }
 
@@ -28,8 +28,8 @@ func (c *connection) reader() {
 			break
 		}
 
-		pkt := packet {
-			conn: c,
+		pkt := packet{
+			conn:    c,
 			message: buf,
 		}
 

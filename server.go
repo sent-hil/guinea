@@ -33,9 +33,9 @@ func main() {
 	ln, _ := net.Listen("tcp", ":3000")
 	go h.run()
 
-	go func () {
+	go func() {
 		http.HandleFunc("/", page)
-		http.Handle("/ws", websocket.Handler(handler))
+		http.Handle("/ws", websocket.Handler(wshandler))
 		err := http.ListenAndServe(":8080", nil)
 		if err != nil {
 			log.Fatal(err)
@@ -54,7 +54,8 @@ func main() {
 	}
 }
 
-func handler(ws *websocket.Conn) {
+// TODO: DRY it out, it's very similar to ncHandler().
+func wshandler(ws *websocket.Conn) {
 	c := &connection{send: make(chan []byte, 256), ty: ws}
 
 	h.register <- c
