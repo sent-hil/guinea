@@ -13,7 +13,11 @@ Connect via terminal:
 or Connect via telent:
 `telnet localhost 3000`
 
+or Connect via websockets:
+navigate to `http://localhost:8080/` in browser
+
 ## Depedencies:
 
 * Go 1.0.3
 * termbox
+* websockets
