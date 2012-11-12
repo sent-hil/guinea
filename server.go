@@ -33,12 +33,14 @@ func main() {
 	ln, _ := net.Listen("tcp", ":3000")
 	go h.run()
 
-	http.HandleFunc("/", page)
-	http.Handle("/ws", websocket.Handler(handler))
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	go func () {
+		http.HandleFunc("/", page)
+		http.Handle("/ws", websocket.Handler(handler))
+		err := http.ListenAndServe(":8080", nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	// loop to look for connections
 	for {
@@ -52,10 +54,13 @@ func main() {
 	}
 }
 
-//func handler(w http.ResponseWriter, r *http.Request) {
-func handler(ws *websocket.Conn) { // this should be able to read and write
-	var s string
-	fmt.Fscan(ws, &s)
-	fmt.Println("Rec Jesus ", s)
-	fmt.Fprintf(ws, "Hi")
+func handler(ws *websocket.Conn) {
+	c := &connection{send: make(chan []byte, 256), ty: ws}
+
+	h.register <- c
+
+	defer func() { h.unregister <- c }()
+
+	go c.writer()
+	c.reader()
 }

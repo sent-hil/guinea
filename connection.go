@@ -2,11 +2,13 @@ package main
 
 import (
 	"net"
+	"io"
 	//"fmt"
 )
 
 type connection struct {
-	nc   net.Conn
+	// type of connection
+	ty io.ReadWriteCloser
 	send chan []byte
 }
 
@@ -20,7 +22,7 @@ func (c *connection) reader() {
 		// read message
 		buf := make([]byte, 8)
 
-		_, err := c.nc.Read(buf)
+		_, err := c.ty.Read(buf)
 
 		if err != nil {
 			break
@@ -38,14 +40,14 @@ func (c *connection) reader() {
 func (c *connection) writer() {
 	for message := range c.send {
 		// write message
-		c.nc.Write(message)
+		c.ty.Write(message)
 	}
-	c.nc.Close()
+	c.ty.Close()
 }
 
 func ncHandler(nc net.Conn) {
 	// inits and sets connection
-	c := &connection{send: make(chan []byte, 256), nc: nc}
+	c := &connection{send: make(chan []byte, 256), ty: nc}
 
 	// registers connection
 	h.register <- c
