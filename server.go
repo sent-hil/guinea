@@ -3,38 +3,27 @@ package main
 import (
 	"code.google.com/p/go.net/websocket"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"net/http"
+	"text/template"
 )
 
-func page(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, index)
-}
+// our raw html
+var homeTempl = template.Must(
+	template.ParseFiles("resources/index.html"))
 
-var index = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<script>
-  var websocket = new WebSocket("ws://localhost:8080/ws");
-  websocket.onmessage = function (msg) { console.log(msg); }
-  websocket.onclose = function (msg) { console.log("FOO"); }
-</script>
-<body>
-The Faith of Humanity Lives in The Black Liquid.
-</body>
-</html>
-`
+func homeHandler(c http.ResponseWriter, req *http.Request) {
+	// applies our template "to" req.Host (data obj)
+	homeTempl.Execute(c, req.Host)
+}
 
 func main() {
 	ln, _ := net.Listen("tcp", ":3000")
 	go h.run()
 
 	go func() {
-		http.HandleFunc("/", page)
+		http.HandleFunc("/", homeHandler)
 		http.Handle("/ws", websocket.Handler(wshandler))
 		err := http.ListenAndServe(":8080", nil)
 		if err != nil {
