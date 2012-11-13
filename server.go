@@ -41,9 +41,9 @@ func handleTCP() {
 }
 
 func main() {
-	go h.run() // start hub
+	go h.run()      // start hub
 	go handleHTTP() // serve http requests
-	handleTCP() // listens and handles TCP connections
+	handleTCP()     // listens and handles TCP connections
 
 	// add quit channel later
 }
