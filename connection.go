@@ -49,12 +49,5 @@ func ncHandler(nc net.Conn) {
 	// inits and sets connection
 	c := &connection{send: make(chan []byte, 256), ty: nc}
 
-	// registers connection
-	h.register <- c
-
-	// unregisters connection once handler exists
-	defer func() { h.unregister <- c }()
-
-	go c.writer()
-	c.reader()
+	handler(c)
 }

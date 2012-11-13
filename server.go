@@ -54,10 +54,13 @@ func main() {
 	}
 }
 
-// TODO: DRY it out, it's very similar to ncHandler().
 func wshandler(ws *websocket.Conn) {
 	c := &connection{send: make(chan []byte, 256), ty: ws}
 
+	handler(c)
+}
+
+func handler(c *connection) {
 	h.register <- c
 
 	defer func() { h.unregister <- c }()
