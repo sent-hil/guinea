@@ -9,6 +9,7 @@ type hub struct {
 	unregister  chan *connection
 }
 
+// TODO: change to more descriptive name, move to diff. place
 var h = hub{
 	connections: make(map[*connection]bool),
 	broadcast:  make(chan packet),

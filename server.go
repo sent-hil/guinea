@@ -18,6 +18,7 @@ func homeHandler(c http.ResponseWriter, req *http.Request) {
 	homeTempl.Execute(c, req.Host)
 }
 
+// TODO: decouple http & websocket handlers
 func handleHTTP() {
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(wshandler))
@@ -54,6 +55,7 @@ func wshandler(ws *websocket.Conn) {
 	handler(c)
 }
 
+// TODO: change to more descriptive name
 func handler(c *connection) {
 	h.register <- c
 
