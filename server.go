@@ -58,6 +58,7 @@ func wshandler(ws *websocket.Conn) {
 // TODO: change to more descriptive name
 func handler(c *connection) {
 	h.register <- c
+	h.broadcast <- packet{conn:c, message:make([]byte, 8)}
 
 	defer func() { h.unregister <- c }()
 
