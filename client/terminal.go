@@ -23,13 +23,17 @@ func reader(nc net.Conn) {
 }
 
 // write to server
-func writer(nc net.Conn) {
+func writer(nc net.Conn, quit chan<- bool) {
 	for {
 		e := termbox.PollEvent()
 		if e.Ch == 0 {
 			switch e.Key {
 			case termbox.KeyCtrlC:
-				return
+				fmt.Println("cntrl c")
+				quit <- true
+			case termbox.KeySpace:
+				nc.Write([]byte(" "))
+				fmt.Print(" ")
 			}
 		} else {
 			// send to server
@@ -43,6 +47,8 @@ func main() {
 	args := os.Args
 	addr := args[1]
 
+	quit := make(chan bool)
+
 	// connects to tcp server
 	nc, err := net.Dial("tcp", addr)
 	if err != nil {
@@ -55,6 +61,7 @@ func main() {
 	}
 	defer termbox.Close()
 
-	go writer(nc)
-	reader(nc)
+	go writer(nc, quit)
+	go reader(nc)
+	<-quit
 }
