@@ -8,7 +8,7 @@
   var websocket = new WebSocket("ws://localhost:8080/ws");
 
   websocket.onmessage = function (msg) {
-    $("#output").append(msg.data+ "<br>");
+    $("#output #data").append(msg.data);
   }
 
   websocket.onclose = function (msg) {
@@ -31,8 +31,12 @@
 
 <body>
 The Faith of Humanity Lives in The Black Liquid.
-<div id="input">Input:</div>
-<div id="output">Output:</div>
+<div id="input">Input:
+  <p id="data"></p>
+</div>
+<div id="output">Output:
+  <p id="data"></p>
+</div>
 </body>
 
 </html>
