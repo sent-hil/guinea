@@ -18,20 +18,17 @@ func homeHandler(c http.ResponseWriter, req *http.Request) {
 	homeTempl.Execute(c, req.Host)
 }
 
-func main() {
+func handleHTTP() {
+	http.HandleFunc("/", homeHandler)
+	http.Handle("/ws", websocket.Handler(wshandler))
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handleTCP() {
 	ln, _ := net.Listen("tcp", ":3000")
-	go h.run()
-
-	go func() {
-		http.HandleFunc("/", homeHandler)
-		http.Handle("/ws", websocket.Handler(wshandler))
-		err := http.ListenAndServe(":8080", nil)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	// loop to look for connections
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -41,6 +38,14 @@ func main() {
 		// handle individual connection
 		go ncHandler(conn)
 	}
+}
+
+func main() {
+	go h.run() // start hub
+	go handleHTTP() // serve http requests
+	handleTCP() // listens and handles TCP connections
+
+	// add quit channel later
 }
 
 func wshandler(ws *websocket.Conn) {
