@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script>
+  var websocket = new WebSocket("ws://localhost:8080/ws");
+  websocket.onmessage = function (msg) { console.log(msg); }
+  websocket.onclose = function (msg) { console.log("FOO"); }
+</script>
+<body>
+The Faith of Humanity Lives in The Black Liquid.
+</body>
+</html>
