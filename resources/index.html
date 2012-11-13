@@ -2,12 +2,23 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js"></script>
 <script>
   var websocket = new WebSocket("ws://localhost:8080/ws");
   websocket.onmessage = function (msg) { console.log(msg); }
   websocket.onclose = function (msg) { console.log("FOO"); }
 </script>
+
+<script>
+  // send key presses to websocket
+  $(document).ready(function() {
+    $("body").keypress(function(e) {
+      websocket.send(e.keyCode); });
+  });
+</script>
+
 <body>
 The Faith of Humanity Lives in The Black Liquid.
 </body>
+
 </html>
