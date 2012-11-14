@@ -50,7 +50,10 @@ func main() {
 }
 
 func wshandler(ws *websocket.Conn) {
-	c := &connection{send: make(chan []byte, 256), ty: ws}
+	uid := get_uid(ws.RemoteAddr().String())
+
+	c := &connection{send: make(chan []byte, 256), ty: ws,
+		uid: uid}
 
 	handler(c)
 }
@@ -58,7 +61,7 @@ func wshandler(ws *websocket.Conn) {
 // TODO: change to more descriptive name
 func handler(c *connection) {
 	h.register <- c
-	h.broadcast <- packet{conn:c, message:make([]byte, 8)}
+	h.broadcast <- packet{conn: c, message: make([]byte, 8)}
 
 	defer func() { h.unregister <- c }()
 

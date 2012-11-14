@@ -12,9 +12,9 @@ type hub struct {
 // TODO: change to more descriptive name, move to diff. place
 var h = hub{
 	connections: make(map[*connection]bool),
-	broadcast:  make(chan packet),
-	register:   make(chan *connection),
-	unregister: make(chan *connection),
+	broadcast:   make(chan packet),
+	register:    make(chan *connection),
+	unregister:  make(chan *connection),
 }
 
 func (h *hub) run() {
