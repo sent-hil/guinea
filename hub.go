@@ -12,9 +12,9 @@ type hub struct {
 // TODO: change to more descriptive name, move to diff. place
 var h = hub{
 	connections: make(map[*connection]bool),
-	broadcast:  make(chan packet),
-	register:   make(chan *connection),
-	unregister: make(chan *connection),
+	broadcast:   make(chan packet),
+	register:    make(chan *connection),
+	unregister:  make(chan *connection),
 }
 
 func (h *hub) run() {
@@ -28,7 +28,7 @@ func (h *hub) run() {
 			fmt.Println("unregistered: ", c)
 		case pkt := <-h.broadcast:
 			for conn, _ := range h.connections {
-				if !(pkt.conn == conn) {
+				if !(pkt.conn.uid == conn.uid) {
 					conn.send <- pkt.message
 				}
 			}
