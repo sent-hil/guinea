@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net"
-	//"fmt"
+	"time"
 )
 
 type connection struct {
 	// type of connection
+	uid  string
 	ty   io.ReadWriteCloser
 	send chan []byte
 }
@@ -46,8 +48,12 @@ func (c *connection) writer() {
 }
 
 func ncHandler(nc net.Conn) {
+	time_tos := time.Now().Unix()
+	remote_tos := nc.RemoteAddr()
+	uid := fmt.Sprintf("%d-%s", time_tos, remote_tos)
+
 	// inits and sets connection
-	c := &connection{send: make(chan []byte, 256), ty: nc}
+	c := &connection{send: make(chan []byte, 256), ty: nc, uid: uid}
 
 	handler(c)
 }
