@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"text/template"
+	"strings"
 )
 
 // our raw html
@@ -61,7 +62,10 @@ func wshandler(ws *websocket.Conn) {
 // TODO: change to more descriptive name
 func handler(c *connection) {
 	h.register <- c
-	h.broadcast <- packet{conn: c, message: make([]byte, 8)}
+
+	addr := strings.Split(c.uid, "-")
+	msg := []byte(fmt.Sprintf("%s %s", addr[1], "has joined."))
+	h.broadcast <- packet{conn: c, message: msg}
 
 	defer func() { h.unregister <- c }()
 
