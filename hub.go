@@ -32,7 +32,7 @@ func (h *hub) run() {
 		case pkt := <-h.broadcast:
 			for conn, _ := range h.connections {
 				if !(pkt.conn.uid == conn.uid) {
-					mapD := map[string]string{conn.uid:string(pkt.message)}
+					mapD := map[string]string{pkt.conn.uid:string(pkt.message)}
 					mapB, _ := json.Marshal(mapD)
 					conn.send <- mapB
 				}
