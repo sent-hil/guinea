@@ -14,19 +14,26 @@ p {background-color:#333;}
 
 
 </style>
+
+<!--serve seperately later-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js"></script>
 <script>
   var websocket = new WebSocket("ws://localhost:8080/ws");
 
   websocket.onmessage = function (msg) {
-    $("#output #data").append(msg.data);
-
 		val = JSON.parse(msg.data)
-		for (key in val) {
-			var $element = $(key);
-			if(!$element.length)
-				$element = $('<div id="element">'+val[key]+'</div>').appendTo('#output #data');
-		}
+		for (uid in val) {
+			var children = $("#output").children();
+			for (i = 0; i < children.length; i++) {
+				if (children[i].id === uid) {
+					$(children[i]).append(val[uid]);
+					return
+				}
+			}
+
+			string = "<p id=" + uid + ">" + val[uid] + "</div>";
+			$("#output").append(string);
+	 	}
   }
 
   websocket.onclose = function (msg) {
