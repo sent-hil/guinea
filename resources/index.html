@@ -20,6 +20,13 @@ p {background-color:#333;}
 
   websocket.onmessage = function (msg) {
     $("#output #data").append(msg.data);
+
+		val = JSON.parse(msg.data)
+		for (key in val) {
+			var $element = $(key);
+			if(!$element.length)
+				$element = $('<div id="element">'+val[key]+'</div>').appendTo('#output #data');
+		}
   }
 
   websocket.onclose = function (msg) {

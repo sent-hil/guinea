@@ -5,13 +5,14 @@ import (
 	"io"
 	"net"
 	"time"
+	"encoding/json"
 )
 
 type connection struct {
 	// type of connection
 	uid  string
 	ty   io.ReadWriteCloser
-	send chan []byte
+	send chan json.RawMessage
 }
 
 type packet struct {
@@ -51,7 +52,7 @@ func ncHandler(nc net.Conn) {
 	uid := get_uid(nc.RemoteAddr().String())
 
 	// inits and sets connection
-	c := &connection{send: make(chan []byte, 256), ty: nc, uid: uid}
+	c := &connection{send: make(chan json.RawMessage), ty: nc, uid: uid}
 
 	handler(c)
 }

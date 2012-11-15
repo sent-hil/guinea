@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"encoding/json"
+)
 
 type hub struct {
 	connections map[*connection]bool
@@ -29,7 +32,9 @@ func (h *hub) run() {
 		case pkt := <-h.broadcast:
 			for conn, _ := range h.connections {
 				if !(pkt.conn.uid == conn.uid) {
-					conn.send <- pkt.message
+					mapD := map[string]string{conn.uid:string(pkt.message)}
+					mapB, _ := json.Marshal(mapD)
+					conn.send <- mapB
 				}
 			}
 
