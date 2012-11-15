@@ -10,8 +10,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 body
 {font-size:4em;background-color:#111;padding:1em;color:#5D5;font-family:Verdana;}
 
-p {background-color:#333;}
-
+p {background-color:#333;padding-bottom:10px;}
 
 </style>
 
@@ -31,7 +30,7 @@ p {background-color:#333;}
 				}
 			}
 
-			string = "<p id=" + uid + ">" + val[uid] + "</div>";
+			string = "<p id=" + uid + ">" + val[uid] + "</p>";
 			$("#output").append(string);
 	 	}
   }
@@ -55,11 +54,12 @@ p {background-color:#333;}
 </script>
 
 <body>
-<div id="input">
-  <p id="data">> </p>
-</div>
 <div id="output">
   <p id="data"></p>
+</div>
+<br /><br />
+<div id="input">
+  <p id="data">> </p>
 </div>
 </body>
 
