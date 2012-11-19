@@ -44,8 +44,8 @@ p {background-color:#333;padding-bottom:10px;}
   // send key presses to websocket
   $(document).ready(function() {
     $("body").keypress(function(e) {
-      // convert from keycode to string
-      var char = String.fromCharCode(e.keyCode);
+      // convert from char code to string
+      var char = String.fromCharCode(e.charCode);
 
       websocket.send(char);
       $("#input #data").text($("#input #data").text() + char);
