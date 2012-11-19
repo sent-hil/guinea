@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// TODO: abstract the http handlers to higher order functions
 var homeTempl = template.Must(template.ParseFiles("resources/index.html"))
 
 func homeHandler(c http.ResponseWriter, req *http.Request) {
@@ -41,7 +42,10 @@ func handleTCP() {
 	}
 }
 
+// TODO: let user specify which binary to run using flags
+//			 rather having different binaries.
 func main() {
+	// TODO: call newHub(), which spawns goroutines inside
 	go h.run()      // start hub
 	go handleHTTP() // serve http requests
 	handleTCP()     // listens and handles TCP connections
@@ -52,6 +56,8 @@ func main() {
 func wshandler(ws *websocket.Conn) {
 	uid := get_uid(ws.RemoteAddr().String())
 
+	// TODO: abstract to func NewConnection() which takes
+	//			 interface io.ReadWriteCloser()
 	c := &connection{send: make(chan json.RawMessage), ty: ws,
 		uid: uid}
 
@@ -60,6 +66,7 @@ func wshandler(ws *websocket.Conn) {
 
 // TODO: change to more descriptive name
 func handler(c *connection) {
+	// TODO: change to method?
 	h.register <- c
 
 	//addr := strings.Split(c.uid, "-")
