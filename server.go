@@ -2,25 +2,20 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net"
 	"net/http"
-	"text/template"
-	//"strings"
-	"encoding/json"
 )
 
-// our raw html
-var homeTempl = template.Must(
-	template.ParseFiles("resources/index.html"))
+var homeTempl = template.Must(template.ParseFiles("resources/index.html"))
 
 func homeHandler(c http.ResponseWriter, req *http.Request) {
-	// applies our template "to" req.Host (data obj)
 	homeTempl.Execute(c, req.Host)
 }
 
-// TODO: decouple http & websocket handlers
 func handleHTTP() {
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(wshandler))
@@ -31,7 +26,10 @@ func handleHTTP() {
 }
 
 func handleTCP() {
-	ln, _ := net.Listen("tcp", ":3000")
+	ln, err := net.Listen("tcp", ":3000")
+	if err != nil {
+		log.Fatal(err)
+	}
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
